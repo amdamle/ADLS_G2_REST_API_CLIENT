@@ -1,0 +1,433 @@
+{
+	"info": {
+		"_postman_id": "08063b42-a35b-42fd-a4a6-93f7adbd57a3",
+		"name": "ADLS_Requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LIST_FILE_SYSTEMS",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}?resource=account",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "account"
+						}
+					]
+				},
+				"description": "Lists the file systems created in given ADLS Gen2 account"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0e0c07c6-32fc-441d-9a4e-007a5d40b9c4",
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"postman.setGlobalVariable(\"adls_token\", data.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{ADLS_AAD_CLIENT_ID}}",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "https://storage.azure.com/.default",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{ADLS_CLIENT_SECRET}}",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ADLS_G2_LOGIN_URL}}{{ADLSG2_TENANT_ID}}/oauth2/v2.0/token",
+					"host": [
+						"{{ADLS_G2_LOGIN_URL}}{{ADLSG2_TENANT_ID}}"
+					],
+					"path": [
+						"oauth2",
+						"v2.0",
+						"token"
+					]
+				},
+				"description": "Make use of service principle to get token\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_FILE_SYSTEM",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Length",
+						"value": "0",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-version",
+						"value": "2019-12-12",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2?resource=filesystem",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "filesystem"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_FILE",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}func-evts/raw/imp-links.txt",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}func-evts"
+					],
+					"path": [
+						"raw",
+						"imp-links.txt"
+					]
+				},
+				"description": "Get file using Token received in earlier request.\r\nFile path needs to be specified in URL\r\n\r\ne.g. if testfile.txt present in folder folder1 from filesystem1 to be downloaded then Get URL should be \r\nhttps://<STORAGE_NAME>.dfs.core.windows.net/filesystem1/folder1/testfile.txt"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_DIR",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2/test1?resource=directory",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"path": [
+						"test1"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "directory"
+						}
+					]
+				},
+				"description": "Request to create directory"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_FILE",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2/test3/test2.csv?resource=file",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"path": [
+						"test3",
+						"test2.csv"
+					],
+					"query": [
+						{
+							"key": "resource",
+							"value": "file"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_FILE_APPEND_DATA",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": "/C:/Amit/cust-order-191.txt"
+					}
+				},
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2/test3/test2.csv?action=append&position=0",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"path": [
+						"test3",
+						"test2.csv"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "append"
+						},
+						{
+							"key": "position",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE_FILE_FLUSH_DATA",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2/test3/test2.csv?action=flush&position=154",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"path": [
+						"test3",
+						"test2.csv"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "flush"
+						},
+						{
+							"key": "position",
+							"value": "154"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RENAME_DIR_FILE",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adls_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-ms-version",
+						"value": "{{ADLS_G2_VERSION}}",
+						"type": "text"
+					},
+					{
+						"key": "x-ms-rename-source",
+						"value": "/testrestapifs2/test2",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{ADLS_G2_URL_PREFIX}}testrestapifs2/test3",
+					"host": [
+						"{{ADLS_G2_URL_PREFIX}}testrestapifs2"
+					],
+					"path": [
+						"test3"
+					]
+				},
+				"description": "Demonstrates how to rename a directory or file\r\nfor renaming the file url should specify path upto file without trailing slash\r\nx-ms-rename-source is required for rename operation, value will be old path of directory or file e.g. if you have directory /fs-test/test1 which need to be renamed to /fs-test/test2 then please specify new path in the PUT url e.g. https://<ACCOUNT_NAME>.dfs.core.windows.net//fs-test/test2 and x-ms-rename-source :fs-test/test1\r\n"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ADB_JOB_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"id": "89e67cbd-a77c-4320-87f2-56afaaab0100",
+			"key": "ADLS_TOKEN",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
